@@ -106,6 +106,40 @@ async function generateOutput(
   });
 }
 
+async function polishDiary(notes: string) {
+  return await callGemini({
+    system:
+      "You help a student turn rough notes into a clear, first-person internship diary " +
+      "entry. Preserve every fact and detail they mention - never invent experiences, " +
+      "names, or metrics. Keep it natural, reflective, and concise: usually one short " +
+      "paragraph (two at most if the notes clearly warrant it). No headings, no generic " +
+      "filler, no preamble - return only the entry text.",
+    user: notes,
+    maxOutputTokens: 1024,
+    temperature: 0.6,
+  });
+}
+
+async function resumeSection(task: string, context: string, current: string) {
+  return await callGemini({
+    system:
+      "You are a resume-writing assistant. Write concise, professional resume content " +
+      "using strong action verbs and quantified impact wherever the context provides " +
+      "numbers. Never invent employers, titles, dates, or metrics that are not present " +
+      "in the context. Follow standard resume conventions (no first-person pronouns in " +
+      "bullet points). Return only the requested content - no preamble or explanation.",
+    user: [
+      `Task: ${task}`,
+      "",
+      "Candidate context:",
+      context || "(no additional context provided)",
+      current ? `\nExisting text to improve (keep what's good):\n${current}` : "",
+    ].join("\n"),
+    maxOutputTokens: 1024,
+    temperature: 0.5,
+  });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: CORS_HEADERS });
@@ -125,6 +159,14 @@ Deno.serve(async (req) => {
       }
       case "generate_output": {
         const content = await generateOutput(body.outputType, body.reflection, body.sections);
+        return jsonResponse({ content });
+      }
+      case "polish_diary": {
+        const content = await polishDiary(body.notes);
+        return jsonResponse({ content });
+      }
+      case "resume_section": {
+        const content = await resumeSection(body.task, body.context ?? "", body.current ?? "");
         return jsonResponse({ content });
       }
       default:

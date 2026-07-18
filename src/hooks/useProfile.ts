@@ -1,10 +1,34 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 
+export type ResumeExperience = {
+  id: string;
+  company: string;
+  role: string;
+  dates: string;
+  bullets: string;
+};
+
+export type ResumeEducation = {
+  id: string;
+  school: string;
+  degree: string;
+  dates: string;
+};
+
+export type ResumeData = {
+  contact: { name: string; email: string; phone: string; location: string; links: string };
+  summary: string;
+  experience: ResumeExperience[];
+  education: ResumeEducation[];
+  skills: string;
+};
+
 export type Profile = {
   user_id: string;
   resume_text: string | null;
   resume_path: string | null;
+  resume_data: ResumeData | null;
   updated_at: string;
 };
 
@@ -40,6 +64,21 @@ export function useProfile() {
     const { error } = await supabase
       .from("profiles")
       .upsert({ user_id: userId, resume_text: text, updated_at: new Date().toISOString() });
+
+    if (error) return { error: error.message };
+    await fetchProfile();
+    return { error: null };
+  }
+
+  // Save the structured Resume Builder data (creates the profile row if needed).
+  async function saveResumeData(data: ResumeData) {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    if (!userId) return { error: "Not signed in." };
+
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ user_id: userId, resume_data: data, updated_at: new Date().toISOString() });
 
     if (error) return { error: error.message };
     await fetchProfile();
@@ -102,6 +141,7 @@ export function useProfile() {
     loading,
     error,
     saveResumeText,
+    saveResumeData,
     uploadResumeFile,
     getResumeUrl,
     removeResumeFile,

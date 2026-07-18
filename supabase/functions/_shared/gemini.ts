@@ -2,7 +2,7 @@
 // Requires a Supabase secret: supabase secrets set GEMINI_API_KEY=...
 // Get a key at https://aistudio.google.com/apikey
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-flash-latest";
 const API_KEY = Deno.env.get("GEMINI_API_KEY");
 
 export const CORS_HEADERS = {

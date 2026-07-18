@@ -179,6 +179,18 @@
   .section-label {
     @apply mb-6 flex items-center gap-4;
   }
+
+  /* Print: show only the resume sheet, hide app chrome. */
+  @media print {
+    .no-print { display: none !important; }
+    .resume-sheet {
+      box-shadow: none !important;
+      border: none !important;
+      max-width: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
   .section-label .rule {
     @apply h-px flex-1;
     background: var(--border);

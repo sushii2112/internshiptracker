@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useDiaryEntries } from "@/hooks/useDiaryEntries";
+import { polishDiary } from "@/lib/aiWriter";
 
 type AddDiaryEntryFormProps = {
   onSuccess?: () => void;
@@ -18,6 +19,24 @@ export default function AddDiaryEntryForm({ onSuccess }: AddDiaryEntryFormProps)
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [polishing, setPolishing] = useState(false);
+
+  async function handlePolish() {
+    if (!content.trim()) {
+      setError("Write a few rough notes first, then let AI polish them.");
+      return;
+    }
+    setPolishing(true);
+    setError(null);
+    try {
+      const { content: polished } = await polishDiary(content);
+      setContent(polished);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to polish entry");
+    } finally {
+      setPolishing(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,16 +102,26 @@ export default function AddDiaryEntryForm({ onSuccess }: AddDiaryEntryFormProps)
         </div>
 
         <div>
-          <label className="small-caps block mb-2">
-            What did you learn, achieve, or experience?
-          </label>
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <label className="small-caps">
+              What did you learn, achieve, or experience?
+            </label>
+            <button
+              type="button"
+              onClick={handlePolish}
+              disabled={polishing}
+              className="small-caps text-primary underline-offset-4 hover:underline disabled:opacity-50 touch-manipulation"
+            >
+              {polishing ? "Polishing…" : "✦ Polish with AI"}
+            </button>
+          </div>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
             rows={5}
             className="w-full rounded-md border px-4 py-3 text-base bg-transparent leading-relaxed placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary transition-colors"
-            placeholder="Write freely about your day, what you learned, any wins or interesting moments..."
+            placeholder="Jot rough notes (or write freely) — then hit Polish with AI to turn them into a written entry..."
           />
         </div>
 

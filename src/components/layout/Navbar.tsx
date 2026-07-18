@@ -14,6 +14,7 @@ const links = [
   { name: "Applications", path: "/applications" },
   { name: "Diaries", path: "/diaries" },
   { name: "Reflections", path: "/reflections" },
+  { name: "Resume", path: "/resume" },
   { name: "Calendar", path: "/calendar" },
   { name: "Analytics", path: "/analytics" },
 ];
@@ -30,7 +31,7 @@ export default function Navbar() {
   const dashboardActive = location.pathname === "/";
 
   return (
-    <header className="border-b border-sidebar-border bg-sidebar">
+    <header className="no-print border-b border-sidebar-border bg-sidebar">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5 md:px-12">
         <Link
           to="/"
