@@ -1,12 +1,16 @@
 import { useApplications } from "@/hooks/useApplications";
+import { useDiaryEntries } from "@/hooks/useDiaryEntries";
+import { useReflections } from "@/hooks/useReflections";
 import Hero from "@/components/dashboard/Hero";
 import StatsGrid from "@/components/dashboard/StatsGrid";
 import Pipeline from "@/components/dashboard/Pipeline";
-import ActivityCard from "@/components/dashboard/ActivityCard";
+import RecentActivity from "@/components/dashboard/RecentActivity";
 import UpcomingDeadlines from "@/components/dashboard/UpcomingDeadlines";
 
 export default function Dashboard() {
   const { applications, loading, error } = useApplications();
+  const { entries } = useDiaryEntries();
+  const { reflections } = useReflections();
 
   if (loading) return <p className="text-muted-foreground">Loading...</p>;
   if (error) return <p className="text-destructive">Error: {error}</p>;
@@ -15,7 +19,7 @@ export default function Dashboard() {
     <div>
       <Hero />
 
-      <div className="section-label">
+      <div className="section-label mt-12">
         <span className="rule" />
         <span className="label">Overview</span>
         <span className="rule" />
@@ -36,7 +40,11 @@ export default function Dashboard() {
       </div>
       <div className="grid gap-6 md:grid-cols-2">
         <UpcomingDeadlines applications={applications} />
-        <ActivityCard applications={applications} />
+        <RecentActivity
+          applications={applications}
+          entries={entries}
+          reflections={reflections}
+        />
       </div>
     </div>
   );
