@@ -17,9 +17,9 @@ export default function Diaries() {
 
   return (
     <div className="max-w-5xl space-y-12">
-      <div>
+      <div className="text-center">
         <h1 className="text-4xl font-heading leading-tight">Internship Diaries</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
           A running record of what you're learning, day by day.
         </p>
       </div>
