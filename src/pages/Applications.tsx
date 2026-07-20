@@ -155,7 +155,7 @@ export default function Applications() {
         </div>
       )}
 
-      <AddApplicationForm onSuccess={refetch} />
+      <AddApplicationForm onSuccess={refetch} tagSuggestions={allTags} />
     </div>
   );
 }

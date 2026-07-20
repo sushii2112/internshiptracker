@@ -7,9 +7,10 @@ import { STATUSES, statusLabel } from "@/lib/applicationProgress";
 
 type AddApplicationFormProps = {
   onSuccess?: () => void;
+  tagSuggestions?: string[];
 };
 
-export default function AddApplicationForm({ onSuccess }: AddApplicationFormProps) {
+export default function AddApplicationForm({ onSuccess, tagSuggestions }: AddApplicationFormProps) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [status, setStatus] = useState("applied");
@@ -134,7 +135,12 @@ export default function AddApplicationForm({ onSuccess }: AddApplicationFormProp
 
         <div>
           <label className="small-caps block mb-2">Tags (optional)</label>
-          <TagInput tags={tags} onChange={setTags} placeholder="e.g. backend, big tech, dream…" />
+          <TagInput
+            tags={tags}
+            onChange={setTags}
+            suggestions={tagSuggestions}
+            placeholder="e.g. backend, big tech, dream…"
+          />
         </div>
 
         <div>

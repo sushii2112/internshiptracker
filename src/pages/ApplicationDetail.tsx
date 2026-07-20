@@ -26,6 +26,9 @@ export default function ApplicationDetail() {
   const { applications, loading, error, updateApplication, deleteApplication } = useApplications();
 
   const app = applications.find((a) => a.id === id);
+  const allTags = Array.from(
+    new Set(applications.flatMap((a) => a.tags ?? [])),
+  ).sort((a, b) => a.localeCompare(b));
 
   const [editing, setEditing] = useState(false);
   const [company, setCompany] = useState("");
@@ -153,7 +156,12 @@ export default function ApplicationDetail() {
           </div>
           <div>
             <label className="small-caps block mb-2">Tags</label>
-            <TagInput tags={tags} onChange={setTags} placeholder="e.g. backend, big tech…" />
+            <TagInput
+              tags={tags}
+              onChange={setTags}
+              suggestions={allTags}
+              placeholder="e.g. backend, big tech…"
+            />
           </div>
           <div>
             <label className="small-caps block mb-2">Notes</label>
