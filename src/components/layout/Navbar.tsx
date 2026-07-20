@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
-import { FiMenu } from "react-icons/fi";
+import { FiMenu, FiChevronDown } from "react-icons/fi";
 import { useAuth } from "@/context/AuthContext";
 import {
   Sheet,
@@ -9,8 +9,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 type NavLink = { name: string; path: string; match?: string[] };
+type NavGroup = { label: string; links: NavLink[] };
 
 const JOURNEY: NavLink[] = [
   { name: "Applications", path: "/applications" },
@@ -21,6 +28,11 @@ const TOOLS: NavLink[] = [
   { name: "Resume", path: "/resume" },
   { name: "Calendar", path: "/calendar" },
   { name: "Analytics", path: "/analytics" },
+];
+
+const GROUPS: NavGroup[] = [
+  { label: "Internship Journey", links: JOURNEY },
+  { label: "Tools", links: TOOLS },
 ];
 
 function isActive(pathname: string, link: NavLink) {
@@ -34,22 +46,6 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const settingsActive = location.pathname === "/settings";
   const dashboardActive = location.pathname === "/";
-
-  const desktopLink = (link: NavLink) => {
-    const active = isActive(location.pathname, link);
-    return (
-      <Link
-        key={link.path}
-        to={link.path}
-        aria-current={active ? "page" : undefined}
-        className={`small-caps transition-colors touch-manipulation ${
-          active ? "text-primary" : "hover:text-sidebar-foreground"
-        }`}
-      >
-        {link.name}
-      </Link>
-    );
-  };
 
   const drawerLink = (link: NavLink) => {
     const active = isActive(location.pathname, link);
@@ -86,11 +82,37 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav — two groups split by a divider */}
-        <nav className="hidden items-center gap-6 lg:flex">
-          {JOURNEY.map(desktopLink)}
-          <span className="h-4 w-px bg-border" aria-hidden />
-          {TOOLS.map(desktopLink)}
+        {/* Desktop nav — grouped dropdown menus (label = header) */}
+        <nav className="hidden items-center gap-8 lg:flex">
+          {GROUPS.map((group) => {
+            const groupActive = group.links.some((l) => isActive(location.pathname, l));
+            return (
+              <DropdownMenu key={group.label}>
+                <DropdownMenuTrigger
+                  className={`small-caps flex items-center gap-1 outline-none transition-colors touch-manipulation data-[popup-open]:text-primary ${
+                    groupActive ? "text-primary" : "hover:text-sidebar-foreground"
+                  }`}
+                >
+                  {group.label}
+                  <FiChevronDown className="h-3.5 w-3.5" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="min-w-44">
+                  {group.links.map((link) => {
+                    const active = isActive(location.pathname, link);
+                    return (
+                      <DropdownMenuItem
+                        key={link.path}
+                        render={<Link to={link.path} />}
+                        className={active ? "text-primary" : ""}
+                      >
+                        {link.name}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            );
+          })}
         </nav>
 
         {/* Right-side actions (desktop) */}
