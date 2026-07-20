@@ -9,18 +9,16 @@ const STATUS_LABEL: Record<string, string> = {
   complete: "Complete",
 };
 
-export default function Reflections() {
+export default function ReflectionsTab() {
   const { reflections, loading, error } = useReflections();
 
   return (
-    <div className="mx-auto max-w-2xl space-y-12">
-      <div className="text-center">
-        <h1 className="text-4xl font-heading leading-tight">Reflections</h1>
-        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-          Answer a few guided questions and let AI turn your notes into a polished internship
-          reflection.
-        </p>
-      </div>
+    <div className="space-y-10">
+      <p className="mx-auto max-w-xl text-center text-sm text-muted-foreground">
+        Reflections are optional. If your school or you want a structured write-up,
+        paste the questions below — and as you keep a diary, those entries can help
+        answer them.
+      </p>
 
       <NewReflectionForm />
 
@@ -35,7 +33,9 @@ export default function Reflections() {
         {error && <p className="text-destructive">Error: {error}</p>}
 
         {!loading && !error && reflections.length === 0 && (
-          <p className="text-muted-foreground italic">No reflections yet. Start one above.</p>
+          <p className="text-muted-foreground italic">
+            No reflections yet — start one above if you need one.
+          </p>
         )}
 
         {reflections.length > 0 && (

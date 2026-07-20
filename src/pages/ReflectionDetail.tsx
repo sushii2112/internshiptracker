@@ -31,7 +31,7 @@ export default function ReflectionDetail() {
     setDeleting(true);
     const { error } = await deleteReflection(id);
     setDeleting(false);
-    if (!error) navigate("/reflections");
+    if (!error) navigate("/internship");
   }
 
   if (loading) return <p className="text-muted-foreground">Loading...</p>;
@@ -58,8 +58,8 @@ export default function ReflectionDetail() {
   return (
     <div className="max-w-5xl space-y-12">
       <div>
-        <Link to="/reflections" className="small-caps hover:text-foreground transition-colors">
-          &larr; Reflections
+        <Link to="/internship" className="small-caps hover:text-foreground transition-colors">
+          &larr; Documentation
         </Link>
         <div className="mt-3 flex flex-wrap items-start justify-between gap-4">
           <div>

@@ -12,18 +12,11 @@ function fmtShort(d: string | null | undefined) {
   });
 }
 
-export default function Diaries() {
+export default function DiaryTab() {
   const { entries, loading, error, refetch } = useDiaryEntries();
 
   return (
-    <div className="max-w-5xl space-y-12">
-      <div className="text-center">
-        <h1 className="text-4xl font-heading leading-tight">Internship Diaries</h1>
-        <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-          A running record of what you're learning, day by day.
-        </p>
-      </div>
-
+    <div className="space-y-12">
       <AddDiaryEntryForm onSuccess={refetch} />
 
       <div>

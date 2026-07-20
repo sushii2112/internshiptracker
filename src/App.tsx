@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
@@ -11,9 +11,8 @@ import ApplicationDetail from "./pages/ApplicationDetail";
 import Calendar from "./pages/Calendar";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
-import Diaries from "./pages/Diaries";
+import Internship from "./pages/Internship";
 import DiaryDetail from "./pages/DiaryDetail";
-import Reflections from "./pages/Reflections";
 import ReflectionDetail from "./pages/ReflectionDetail";
 import ResumeBuilder from "./pages/ResumeBuilder";
 import Import from "./pages/Import";
@@ -39,9 +38,10 @@ function AppRoutes() {
         <Route path="/applications/:id" element={<ApplicationDetail />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/analytics" element={<Analytics />} />
-        <Route path="/diaries" element={<Diaries />} />
+        <Route path="/internship" element={<Internship />} />
+        <Route path="/diaries" element={<Navigate to="/internship" replace />} />
         <Route path="/diaries/:id" element={<DiaryDetail />} />
-        <Route path="/reflections" element={<Reflections />} />
+        <Route path="/reflections" element={<Navigate to="/internship" replace />} />
         <Route path="/reflections/:id" element={<ReflectionDetail />} />
         <Route path="/resume" element={<ResumeBuilder />} />
         <Route path="/import" element={<Import />} />

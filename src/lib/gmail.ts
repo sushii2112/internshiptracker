@@ -115,15 +115,36 @@ function extractBody(payload: GmailPart | undefined): string {
   return "";
 }
 
-async function gmailFetch(path: string, token: string) {
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// Gmail limits concurrent requests per user, so retry 429s with backoff.
+async function gmailFetch(path: string, token: string, attempt = 0): Promise<any> {
   const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/${path}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
+  if (res.status === 429 && attempt < 4) {
+    await sleep(500 * (attempt + 1));
+    return gmailFetch(path, token, attempt + 1);
+  }
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Gmail API error ${res.status}: ${text}`);
   }
   return res.json();
+}
+
+// Runs async tasks with a small concurrency cap to avoid Gmail's per-user limit.
+async function mapLimit<T, R>(
+  items: T[],
+  limit: number,
+  fn: (item: T) => Promise<R>,
+): Promise<R[]> {
+  const results: R[] = [];
+  for (let i = 0; i < items.length; i += limit) {
+    const batch = items.slice(i, i + limit);
+    results.push(...(await Promise.all(batch.map(fn))));
+  }
+  return results;
 }
 
 // Lists and fetches recent internship-related emails, parsed for the AI extractor.
@@ -138,8 +159,9 @@ export async function fetchInternshipEmails(
 
   const ids: string[] = (list.messages ?? []).map((m: { id: string }) => m.id);
 
-  const messages = await Promise.all(
-    ids.map((id) => gmailFetch(`messages/${id}?format=full`, token)),
+  // Fetch bodies a few at a time (Gmail rejects too many concurrent requests).
+  const messages = await mapLimit(ids, 4, (id) =>
+    gmailFetch(`messages/${id}?format=full`, token),
   );
 
   return messages.map((msg): ParsedEmail => {

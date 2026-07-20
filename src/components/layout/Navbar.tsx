@@ -10,17 +10,22 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-const links = [
+type NavLink = { name: string; path: string; match?: string[] };
+
+const JOURNEY: NavLink[] = [
   { name: "Applications", path: "/applications" },
-  { name: "Diaries", path: "/diaries" },
-  { name: "Reflections", path: "/reflections" },
+  { name: "Documentation", path: "/internship", match: ["/internship", "/diaries", "/reflections"] },
+];
+
+const TOOLS: NavLink[] = [
   { name: "Resume", path: "/resume" },
   { name: "Calendar", path: "/calendar" },
   { name: "Analytics", path: "/analytics" },
 ];
 
-function isActive(pathname: string, path: string) {
-  return path === "/" ? pathname === "/" : pathname.startsWith(path);
+function isActive(pathname: string, link: NavLink) {
+  const targets = link.match ?? [link.path];
+  return targets.some((t) => (t === "/" ? pathname === "/" : pathname.startsWith(t)));
 }
 
 export default function Navbar() {
@@ -29,6 +34,39 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const settingsActive = location.pathname === "/settings";
   const dashboardActive = location.pathname === "/";
+
+  const desktopLink = (link: NavLink) => {
+    const active = isActive(location.pathname, link);
+    return (
+      <Link
+        key={link.path}
+        to={link.path}
+        aria-current={active ? "page" : undefined}
+        className={`small-caps transition-colors touch-manipulation ${
+          active ? "text-primary" : "hover:text-sidebar-foreground"
+        }`}
+      >
+        {link.name}
+      </Link>
+    );
+  };
+
+  const drawerLink = (link: NavLink) => {
+    const active = isActive(location.pathname, link);
+    return (
+      <Link
+        key={link.path}
+        to={link.path}
+        onClick={() => setOpen(false)}
+        aria-current={active ? "page" : undefined}
+        className={`rounded-md px-3 py-3 transition-colors touch-manipulation ${
+          active ? "bg-sidebar-accent text-primary" : "text-foreground hover:bg-sidebar-accent/60"
+        }`}
+      >
+        <span className="small-caps">{link.name}</span>
+      </Link>
+    );
+  };
 
   return (
     <header className="no-print border-b border-sidebar-border bg-sidebar">
@@ -48,23 +86,11 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop nav — two groups split by a divider */}
         <nav className="hidden items-center gap-6 lg:flex">
-          {links.map((link) => {
-            const active = isActive(location.pathname, link.path);
-            return (
-              <Link
-                key={link.path}
-                to={link.path}
-                aria-current={active ? "page" : undefined}
-                className={`small-caps transition-colors touch-manipulation ${
-                  active ? "text-primary" : "hover:text-sidebar-foreground"
-                }`}
-              >
-                {link.name}
-              </Link>
-            );
-          })}
+          {JOURNEY.map(desktopLink)}
+          <span className="h-4 w-px bg-border" aria-hidden />
+          {TOOLS.map(desktopLink)}
         </nav>
 
         {/* Right-side actions (desktop) */}
@@ -113,24 +139,15 @@ export default function Navbar() {
             </SheetTitle>
 
             <nav className="flex flex-col px-3 py-4">
-              {links.map((link) => {
-                const active = isActive(location.pathname, link.path);
-                return (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setOpen(false)}
-                    aria-current={active ? "page" : undefined}
-                    className={`rounded-md px-3 py-3 transition-colors touch-manipulation ${
-                      active
-                        ? "bg-sidebar-accent text-primary"
-                        : "text-foreground hover:bg-sidebar-accent/60"
-                    }`}
-                  >
-                    <span className="small-caps">{link.name}</span>
-                  </Link>
-                );
-              })}
+              <p className="px-3 pb-1 pt-2 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Internship Journey
+              </p>
+              {JOURNEY.map(drawerLink)}
+
+              <p className="px-3 pb-1 pt-4 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+                Tools
+              </p>
+              {TOOLS.map(drawerLink)}
             </nav>
 
             <div className="mt-auto flex flex-col gap-1 border-t border-border px-3 py-4">

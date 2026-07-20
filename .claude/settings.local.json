@@ -4,7 +4,10 @@
       "Skill(run)",
       "Skill(run:*)",
       "Bash(git init *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(npm run *)",
+      "Bash(perl -0pi -e 's{← Internship}{← Documentation}g' src/pages/DiaryDetail.tsx)",
+      "Bash(perl -0pi -e 's{&larr; Internship}{&larr; Documentation}g' src/pages/ReflectionDetail.tsx)"
     ]
   }
 }

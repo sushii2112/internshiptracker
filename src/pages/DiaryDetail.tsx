@@ -72,7 +72,7 @@ export default function DiaryDetail() {
       setFormError(error);
       return;
     }
-    navigate("/diaries");
+    navigate("/internship");
   }
 
   if (loading) return <p className="text-muted-foreground">Loading...</p>;
@@ -81,8 +81,8 @@ export default function DiaryDetail() {
   if (!entry) {
     return (
       <div className="mx-auto max-w-3xl space-y-6">
-        <Link to="/diaries" className="small-caps hover:text-primary transition-colors">
-          ← Diaries
+        <Link to="/internship" className="small-caps hover:text-primary transition-colors">
+          ← Documentation
         </Link>
         <p className="text-muted-foreground italic">This entry no longer exists.</p>
       </div>
@@ -91,8 +91,8 @@ export default function DiaryDetail() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-10">
-      <Link to="/diaries" className="small-caps inline-block hover:text-primary transition-colors">
-        ← Diaries
+      <Link to="/internship" className="small-caps inline-block hover:text-primary transition-colors">
+        ← Documentation
       </Link>
 
       {editing ? (
