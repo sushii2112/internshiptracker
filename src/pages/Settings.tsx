@@ -117,13 +117,14 @@ export default function Settings() {
                 <StatusPill ok={gmailReady} />
               </div>
               <p className="text-sm text-muted-foreground">
-                Scan your inbox to auto-import applications. Requires a Google
-                OAuth client ID (<code className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</code>).
+                Scan your inbox to auto-import applications, from the{" "}
+                <Link to="/applications" className="text-primary underline-offset-4 hover:underline">
+                  Applications
+                </Link>{" "}
+                page. Requires a Google OAuth client ID (
+                <code className="font-mono text-xs">VITE_GOOGLE_CLIENT_ID</code>).
               </p>
             </div>
-            <Button variant="outline" size="sm" render={<Link to="/import" />}>
-              Open importer
-            </Button>
           </div>
 
           <div className="flex flex-wrap items-start justify-between gap-4 border-t border-border pt-6">

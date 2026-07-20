@@ -1,8 +1,10 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
 import { useApplications } from "@/hooks/useApplications";
 import AddApplicationForm from "@/components/dashboard/AddApplicationForm";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { STATUS_SOFT, STATUSES, statusLabel } from "@/lib/applicationProgress";
 
@@ -35,7 +37,13 @@ export default function Applications() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-4xl font-heading leading-tight">Applications</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-4xl font-heading leading-tight">Applications</h1>
+        <Button variant="outline" size="sm" render={<Link to="/import" />} className="gap-2">
+          <FcGoogle className="h-4 w-4" />
+          Import from Gmail
+        </Button>
+      </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
         <Input
