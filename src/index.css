@@ -45,6 +45,7 @@
     --color-foreground: var(--foreground);
     --color-background: var(--background);
     --color-status-applied: var(--status-applied);
+    --color-status-assessment: var(--status-assessment);
     --color-status-interviewing: var(--status-interviewing);
     --color-status-final-round: var(--status-final-round);
     --color-status-offer: var(--status-offer);
@@ -94,6 +95,7 @@
     --sidebar-ring: #C9B8FF;
 
     --status-applied: #A9C4F0;
+    --status-assessment: #F2CE7E;
     --status-interviewing: #C9B8FF;
     --status-final-round: #8FD9B6;
     --status-offer: #A8D8F0;
@@ -138,6 +140,7 @@
     --sidebar-ring: #C9B8FF;
 
     --status-applied: #7A97CE;
+    --status-assessment: #D4A94F;
     --status-interviewing: #9E87E0;
     --status-final-round: #6FBF9C;
     --status-offer: #7FB8D9;

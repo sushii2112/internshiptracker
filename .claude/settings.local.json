@@ -7,7 +7,9 @@
       "Bash(git add *)",
       "Bash(npm run *)",
       "Bash(perl -0pi -e 's{← Internship}{← Documentation}g' src/pages/DiaryDetail.tsx)",
-      "Bash(perl -0pi -e 's{&larr; Internship}{&larr; Documentation}g' src/pages/ReflectionDetail.tsx)"
+      "Bash(perl -0pi -e 's{&larr; Internship}{&larr; Documentation}g' src/pages/ReflectionDetail.tsx)",
+      "Bash(git commit -q -m 'Move Gmail import entry point to the Applications page *)",
+      "Bash(git push *)"
     ]
   }
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import TagInput from "@/components/applications/TagInput";
 import { STATUSES, statusLabel } from "@/lib/applicationProgress";
 
 type AddApplicationFormProps = {
@@ -17,6 +18,8 @@ export default function AddApplicationForm({ onSuccess }: AddApplicationFormProp
   );
   const [interviewDate, setInterviewDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [link, setLink] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,6 +35,8 @@ export default function AddApplicationForm({ onSuccess }: AddApplicationFormProp
       date_applied: dateApplied,
       interview_date: interviewDate || null,
       notes: notes || null,
+      link: link || null,
+      tags,
     });
 
     setSubmitting(false);
@@ -47,6 +52,8 @@ export default function AddApplicationForm({ onSuccess }: AddApplicationFormProp
     setDateApplied(new Date().toISOString().split("T")[0]);
     setInterviewDate("");
     setNotes("");
+    setLink("");
+    setTags([]);
 
     onSuccess?.();
   }
@@ -112,6 +119,22 @@ export default function AddApplicationForm({ onSuccess }: AddApplicationFormProp
             onChange={(e) => setInterviewDate(e.target.value)}
             className="h-12 rounded-md focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary transition-colors"
           />
+        </div>
+
+        <div>
+          <label className="small-caps block mb-2">Application Link (optional)</label>
+          <Input
+            type="url"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="https://…  (link to the job posting)"
+            className="h-12 rounded-md focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary transition-colors"
+          />
+        </div>
+
+        <div>
+          <label className="small-caps block mb-2">Tags (optional)</label>
+          <TagInput tags={tags} onChange={setTags} placeholder="e.g. backend, big tech, dream…" />
         </div>
 
         <div>

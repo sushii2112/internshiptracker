@@ -11,18 +11,27 @@ export type ProgressStage = {
 
 // The forward pipeline, in order. "rejected" is a terminal state, handled separately.
 export const PROGRESS_STAGES: ProgressStage[] = [
-  { key: "applied", label: "Applied", pct: 25, bar: "bg-status-applied", soft: "bg-status-applied/30" },
-  { key: "interviewing", label: "Interview", pct: 50, bar: "bg-status-interviewing", soft: "bg-status-interviewing/30" },
-  { key: "final_round", label: "Final Round", pct: 75, bar: "bg-status-final-round", soft: "bg-status-final-round/30" },
+  { key: "applied", label: "Applied", pct: 20, bar: "bg-status-applied", soft: "bg-status-applied/30" },
+  { key: "assessment", label: "Assessment", pct: 40, bar: "bg-status-assessment", soft: "bg-status-assessment/30" },
+  { key: "interviewing", label: "Interview", pct: 60, bar: "bg-status-interviewing", soft: "bg-status-interviewing/30" },
+  { key: "final_round", label: "Final Round", pct: 80, bar: "bg-status-final-round", soft: "bg-status-final-round/30" },
   { key: "offer", label: "Offer", pct: 100, bar: "bg-status-offer", soft: "bg-status-offer/30" },
 ];
 
 // Every selectable status, in the order they appear in dropdowns/filters.
-export const STATUSES = ["applied", "interviewing", "final_round", "offer", "rejected"] as const;
+export const STATUSES = [
+  "applied",
+  "assessment",
+  "interviewing",
+  "final_round",
+  "offer",
+  "rejected",
+] as const;
 
 // Full display labels (badges, dropdowns). Distinct from the stepper's short labels.
 const LABELS: Record<string, string> = {
   applied: "Applied",
+  assessment: "Technical Assessment",
   interviewing: "Interviewing",
   final_round: "Final Round",
   offer: "Offer",
@@ -32,6 +41,7 @@ const LABELS: Record<string, string> = {
 // Translucent badge color per status.
 export const STATUS_SOFT: Record<string, string> = {
   applied: "bg-status-applied/30 text-foreground",
+  assessment: "bg-status-assessment/30 text-foreground",
   interviewing: "bg-status-interviewing/30 text-foreground",
   final_round: "bg-status-final-round/30 text-foreground",
   offer: "bg-status-offer/30 text-foreground",
@@ -41,6 +51,7 @@ export const STATUS_SOFT: Record<string, string> = {
 // Solid palette color per status (legend dots, bars).
 export const STATUS_BAR: Record<string, string> = {
   applied: "bg-status-applied",
+  assessment: "bg-status-assessment",
   interviewing: "bg-status-interviewing",
   final_round: "bg-status-final-round",
   offer: "bg-status-offer",

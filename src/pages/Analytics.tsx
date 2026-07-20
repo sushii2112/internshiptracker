@@ -5,6 +5,7 @@ import TrendChart from "@/components/analytics/TrendChart";
 
 const STATUS_META: { key: string; label: string; color: string }[] = [
   { key: "applied", label: "Applied", color: "bg-status-applied" },
+  { key: "assessment", label: "Technical Assessment", color: "bg-status-assessment" },
   { key: "interviewing", label: "Interviewing", color: "bg-status-interviewing" },
   { key: "final_round", label: "Final Round", color: "bg-status-final-round" },
   { key: "offer", label: "Offer", color: "bg-status-offer" },
@@ -22,14 +23,16 @@ export default function Analytics() {
     const rejected = count("rejected");
     const interviewing = count("interviewing");
     const finalRound = count("final_round");
+    const assessment = count("assessment");
     const applied = count("applied");
 
-    const responded = interviewing + finalRound + offers + rejected;
+    const responded = assessment + interviewing + finalRound + offers + rejected;
     const closed = offers + rejected;
 
     return {
       total,
       applied,
+      assessment,
       interviewing,
       finalRound,
       offers,
@@ -45,6 +48,7 @@ export default function Analytics() {
 
   const counts: Record<string, number> = {
     applied: stats.applied,
+    assessment: stats.assessment,
     interviewing: stats.interviewing,
     final_round: stats.finalRound,
     offer: stats.offers,

@@ -9,6 +9,8 @@ export type Application = {
   date_applied: string;
   interview_date: string | null;
   notes: string | null;
+  link: string | null;
+  tags: string[];
   created_at: string;
 };
 
@@ -19,6 +21,8 @@ export type ApplicationInput = {
   date_applied: string;
   interview_date: string | null;
   notes: string | null;
+  link: string | null;
+  tags: string[];
 };
 
 export function useApplications() {

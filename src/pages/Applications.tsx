@@ -24,16 +24,27 @@ export default function Applications() {
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [tagFilter, setTagFilter] = useState("all");
+
+  const allTags = useMemo(() => {
+    const set = new Set<string>();
+    applications.forEach((a) => a.tags?.forEach((t) => set.add(t)));
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [applications]);
 
   const filtered = useMemo(() => {
-    return applications.filter((app) => {
-      const matchesSearch =
-        app.company.toLowerCase().includes(search.toLowerCase()) ||
-        app.role.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = statusFilter === "all" || app.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [applications, search, statusFilter]);
+    return applications
+      .filter((app) => {
+        const matchesSearch =
+          app.company.toLowerCase().includes(search.toLowerCase()) ||
+          app.role.toLowerCase().includes(search.toLowerCase());
+        const matchesStatus = statusFilter === "all" || app.status === statusFilter;
+        const matchesTag = tagFilter === "all" || (app.tags ?? []).includes(tagFilter);
+        return matchesSearch && matchesStatus && matchesTag;
+      })
+      .sort((a, b) => a.company.localeCompare(b.company))
+      .slice(0, 3);
+  }, [applications, search, statusFilter, tagFilter]);
 
   return (
     <div className="space-y-6">
@@ -64,6 +75,21 @@ export default function Applications() {
             </option>
           ))}
         </select>
+
+        {allTags.length > 0 && (
+          <select
+            value={tagFilter}
+            onChange={(e) => setTagFilter(e.target.value)}
+            className="h-12 rounded-md border px-3 text-sm bg-background focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary transition-colors"
+          >
+            <option value="all">All Tags</option>
+            {allTags.map((tag) => (
+              <option key={tag} value={tag}>
+                {tag}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {loading && <p className="text-muted-foreground">Loading applications...</p>}
@@ -93,6 +119,18 @@ export default function Applications() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{app.company}</p>
                   <p className="truncate text-sm text-muted-foreground">{app.role}</p>
+                  {app.tags && app.tags.length > 0 && (
+                    <div className="mt-1.5 flex flex-wrap gap-1.5">
+                      {app.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex shrink-0 items-center gap-5">

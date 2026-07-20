@@ -26,7 +26,7 @@ const RESULT_SCHEMA = {
           role: { type: "STRING" },
           status: {
             type: "STRING",
-            enum: ["applied", "interviewing", "offer", "rejected", "unknown"],
+            enum: ["applied", "assessment", "interviewing", "offer", "rejected", "unknown"],
           },
           category: { type: "STRING" },
           date_applied: { type: "STRING" }, // YYYY-MM-DD or ""
@@ -72,7 +72,8 @@ For internship-related emails, extract:
   "online_assessment", "interview", "offer", "rejection". Pick the single best fit.
 - status: map the category to the student's tracker status. Use EXACTLY one of:
     "applied"        (application confirmation, recruiter outreach)
-    "interviewing"   (online assessment, interview scheduling/invitation)
+    "assessment"     (online assessment, coding test, take-home challenge)
+    "interviewing"   (interview scheduling/invitation, phone/onsite interview)
     "offer"          (offer extended)
     "rejected"       (rejection / not moving forward)
   If genuinely unclear, use "unknown".

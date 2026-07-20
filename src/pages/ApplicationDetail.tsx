@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import ApplicationProgress from "@/components/dashboard/ApplicationProgress";
+import TagInput from "@/components/applications/TagInput";
 import { STATUS_SOFT, STATUSES, statusLabel } from "@/lib/applicationProgress";
 
 function fmtDate(d: string | null | undefined) {
@@ -33,6 +34,8 @@ export default function ApplicationDetail() {
   const [dateApplied, setDateApplied] = useState("");
   const [interviewDate, setInterviewDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [link, setLink] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -45,6 +48,8 @@ export default function ApplicationDetail() {
     setDateApplied(app.date_applied);
     setInterviewDate(app.interview_date ?? "");
     setNotes(app.notes ?? "");
+    setLink(app.link ?? "");
+    setTags(app.tags ?? []);
     setFormError(null);
     setEditing(true);
   }
@@ -61,6 +66,8 @@ export default function ApplicationDetail() {
       date_applied: dateApplied,
       interview_date: interviewDate || null,
       notes: notes || null,
+      link: link || null,
+      tags,
     });
     setSaving(false);
     if (error) {
@@ -141,6 +148,14 @@ export default function ApplicationDetail() {
             <Input type="date" value={interviewDate} onChange={(e) => setInterviewDate(e.target.value)} className={fieldClass} />
           </div>
           <div>
+            <label className="small-caps block mb-2">Application Link</label>
+            <Input type="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://…" className={fieldClass} />
+          </div>
+          <div>
+            <label className="small-caps block mb-2">Tags</label>
+            <TagInput tags={tags} onChange={setTags} placeholder="e.g. backend, big tech…" />
+          </div>
+          <div>
             <label className="small-caps block mb-2">Notes</label>
             <textarea
               value={notes}
@@ -172,6 +187,28 @@ export default function ApplicationDetail() {
             <div>
               <h1 className="text-4xl font-heading leading-tight">{app.company}</h1>
               <p className="mt-1 text-lg text-muted-foreground">{app.role}</p>
+              {app.link && (
+                <a
+                  href={app.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1 text-sm text-primary underline-offset-4 hover:underline"
+                >
+                  View job posting ↗
+                </a>
+              )}
+              {app.tags.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {app.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <Badge className={STATUS_SOFT[app.status] ?? ""}>{statusLabel(app.status)}</Badge>
           </div>
