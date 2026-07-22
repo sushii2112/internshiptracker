@@ -40,9 +40,6 @@ export async function callGemini(opts: GeminiOptions): Promise<string> {
   const generationConfig: Record<string, unknown> = {
     maxOutputTokens: opts.maxOutputTokens ?? 4096,
     temperature: opts.temperature ?? 0.4,
-    // These are deterministic extraction/writing tasks — skip "thinking" so the
-    // whole output budget goes to the actual answer.
-    thinkingConfig: { thinkingBudget: 0 },
   };
   if (opts.schema) {
     generationConfig.responseMimeType = "application/json";

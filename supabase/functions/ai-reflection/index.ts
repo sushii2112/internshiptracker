@@ -120,6 +120,43 @@ async function polishDiary(notes: string) {
   });
 }
 
+async function answerFromDiary(
+  question: string,
+  entries: { date: string; title: string; content: string }[],
+  context: { company?: string; role?: string },
+) {
+  const entryText = entries
+    .map((e) => `[${e.date}] ${e.title ? e.title + ": " : ""}${e.content}`)
+    .join("\n\n");
+  const ctx = [
+    context.company ? `Company: ${context.company}` : "",
+    context.role ? `Role: ${context.role}` : "",
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return await callGemini({
+    system:
+      "You help a student answer an internship reflection question using ONLY their own " +
+      "diary entries. Draft a natural, first-person answer grounded in the specific " +
+      "experiences, facts, and details from the entries. NEVER invent anything not " +
+      "supported by the entries. If the entries don't contain much relevant material, " +
+      "keep the answer brief and use only what's actually there. 2-5 sentences, no " +
+      "preamble - return only the answer text.",
+    user: [
+      ctx ? `Internship: ${ctx}` : "",
+      `Reflection question: ${question}`,
+      "",
+      "My diary entries:",
+      entryText || "(no entries yet)",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+    maxOutputTokens: 1024,
+    temperature: 0.5,
+  });
+}
+
 async function resumeSection(task: string, context: string, current: string) {
   return await callGemini({
     system:
@@ -163,6 +200,10 @@ Deno.serve(async (req) => {
       }
       case "polish_diary": {
         const content = await polishDiary(body.notes);
+        return jsonResponse({ content });
+      }
+      case "answer_from_diary": {
+        const content = await answerFromDiary(body.question, body.entries ?? [], body.context ?? {});
         return jsonResponse({ content });
       }
       case "resume_section": {

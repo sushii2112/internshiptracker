@@ -25,3 +25,11 @@ export function generateOutput(
 ) {
   return invoke<{ content: string }>("generate_output", { outputType, reflection, sections });
 }
+
+export function answerFromDiary(
+  question: string,
+  entries: { date: string; title: string; content: string }[],
+  context: { company?: string | null; role?: string | null },
+) {
+  return invoke<{ content: string }>("answer_from_diary", { question, entries, context });
+}

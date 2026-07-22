@@ -6,6 +6,9 @@ type QuestionItemProps = {
   question: ReflectionQuestion;
   onSaveNotes: (notes: string) => void;
   onPolish: () => Promise<{ error: string | null }>;
+  /** Draft an answer for this question from the user's diary entries. */
+  onDraftFromDiary?: (questionText: string) => Promise<{ content: string; error: string | null }>;
+  diaryCount?: number;
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -20,9 +23,16 @@ const STATUS_LABEL: Record<string, string> = {
   polished: "Polished",
 };
 
-export default function QuestionItem({ question, onSaveNotes, onPolish }: QuestionItemProps) {
+export default function QuestionItem({
+  question,
+  onSaveNotes,
+  onPolish,
+  onDraftFromDiary,
+  diaryCount = 0,
+}: QuestionItemProps) {
   const [notes, setNotes] = useState(question.notes ?? "");
   const [polishing, setPolishing] = useState(false);
+  const [drafting, setDrafting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -36,6 +46,20 @@ export default function QuestionItem({ question, onSaveNotes, onPolish }: Questi
     const { error } = await onPolish();
     setPolishing(false);
     if (error) setError(error);
+  }
+
+  async function handleDraftFromDiary() {
+    if (!onDraftFromDiary) return;
+    setDrafting(true);
+    setError(null);
+    const { content, error } = await onDraftFromDiary(question.question_text);
+    setDrafting(false);
+    if (error) {
+      setError(error);
+      return;
+    }
+    setNotes(content);
+    onSaveNotes(content);
   }
 
   return (
@@ -62,14 +86,26 @@ export default function QuestionItem({ question, onSaveNotes, onPolish }: Questi
 
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
 
-      <button
-        type="button"
-        onClick={handlePolish}
-        disabled={polishing || !notes.trim()}
-        className="mt-3 text-sm text-primary underline-offset-4 hover:underline disabled:opacity-50 disabled:hover:no-underline touch-manipulation"
-      >
-        {polishing ? "Polishing..." : question.polished_answer ? "Regenerate" : "Polish this answer"}
-      </button>
+      <div className="mt-3 flex flex-wrap items-center gap-4">
+        {onDraftFromDiary && diaryCount > 0 && (
+          <button
+            type="button"
+            onClick={handleDraftFromDiary}
+            disabled={drafting}
+            className="text-sm text-primary underline-offset-4 hover:underline disabled:opacity-50 touch-manipulation"
+          >
+            {drafting ? "Drafting from diary…" : "✦ Draft from diary"}
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={handlePolish}
+          disabled={polishing || !notes.trim()}
+          className="text-sm text-primary underline-offset-4 hover:underline disabled:opacity-50 disabled:hover:no-underline touch-manipulation"
+        >
+          {polishing ? "Polishing..." : question.polished_answer ? "Regenerate" : "Polish this answer"}
+        </button>
+      </div>
     </div>
   );
 }

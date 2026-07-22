@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useReflection, useReflections } from "@/hooks/useReflections";
+import { useDiaryEntries } from "@/hooks/useDiaryEntries";
+import { answerFromDiary } from "@/lib/aiReflection";
 import QuestionItem from "@/components/reflection/QuestionItem";
 import OutputsPanel from "@/components/reflection/OutputsPanel";
 import { Button } from "@/components/ui/button";
@@ -20,10 +22,28 @@ export default function ReflectionDetail() {
     updateStatus,
   } = useReflection(id);
   const { deleteReflection } = useReflections();
+  const { entries } = useDiaryEntries();
 
   const [polishingAll, setPolishingAll] = useState(false);
   const [polishAllError, setPolishAllError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+
+  async function draftFromDiary(questionText: string) {
+    const payload = entries.slice(0, 30).map((e) => ({
+      date: e.entry_date,
+      title: e.title ?? "",
+      content: e.content.slice(0, 1500),
+    }));
+    try {
+      const { content } = await answerFromDiary(questionText, payload, {
+        company: reflection?.company,
+        role: reflection?.role,
+      });
+      return { content, error: null };
+    } catch (err) {
+      return { content: "", error: err instanceof Error ? err.message : "Failed to draft" };
+    }
+  }
 
   async function handleDelete() {
     if (!id) return;
@@ -96,6 +116,8 @@ export default function ReflectionDetail() {
               question={q}
               onSaveNotes={(notes) => updateNotes(q.id, notes)}
               onPolish={() => polishQuestions([q])}
+              onDraftFromDiary={draftFromDiary}
+              diaryCount={entries.length}
             />
           ))}
         </div>
