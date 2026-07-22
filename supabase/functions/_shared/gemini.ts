@@ -2,6 +2,9 @@
 // Requires a Supabase secret: supabase secrets set GEMINI_API_KEY=...
 // Get a key at https://aistudio.google.com/apikey
 
+// The free tier only serves the -latest flash alias (pinned versions like
+// gemini-2.0-flash have a 0 free-tier quota). We removed the fragile
+// thinkingConfig param that broke when this alias last rolled.
 const MODEL = "gemini-flash-latest";
 const API_KEY = Deno.env.get("GEMINI_API_KEY");
 

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useApplications } from "@/hooks/useApplications";
 import StatsCard from "@/components/dashboard/StatsCard";
 import TrendChart from "@/components/analytics/TrendChart";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const STATUS_META: { key: string; label: string; color: string }[] = [
   { key: "applied", label: "Applied", color: "bg-status-applied" },
@@ -43,7 +44,18 @@ export default function Analytics() {
     };
   }, [applications]);
 
-  if (loading) return <p className="text-muted-foreground">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <Skeleton className="h-10 w-48" />
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="h-32" />
+          ))}
+        </div>
+      </div>
+    );
+  }
   if (error) return <p className="text-destructive">Error: {error}</p>;
 
   const counts: Record<string, number> = {

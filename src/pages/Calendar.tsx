@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useApplications, type Application } from "@/hooks/useApplications";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   STATUS_SOFT,
   STATUS_BAR,
@@ -74,7 +75,14 @@ export default function Calendar() {
       .slice(0, 6);
   }, [applications, todayKey]);
 
-  if (loading) return <p className="text-muted-foreground">Loading...</p>;
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-40" />
+        <Skeleton className="h-96 w-full rounded-lg" />
+      </div>
+    );
+  }
   if (error) return <p className="text-destructive">Error: {error}</p>;
 
   const firstWeekday = new Date(view.year, view.month, 1).getDay();
